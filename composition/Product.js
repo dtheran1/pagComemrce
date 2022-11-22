@@ -58,7 +58,8 @@ app.component('product', {
   setup(props, { emit }) {
     const productState = reactive({
       activeImage: 0,
-      price_color: 'rgb(104,104,209)'
+      // price_color: 'rgb(104,104,209)'
+      price_color: computed(() => props.product.stock <= 1 ? 'rgb(188, 30, 67)' : 'rgb(104,104,209)') // Una de las ventajas de usar reactive, podemos crear propiedades computadas dentro del objeto reactivo! WoW
     });
 
     const sendToCart = () => {
@@ -76,18 +77,25 @@ app.component('product', {
       }
     }
 
-    watch(() => props.product.stock, (stock) => {//Vue espera una propiedad reactiva no una referencia como este caso, por eso como primer parametro pasamos una function anonima que nos devuelva la propiedad que queremos observar en el objeto reactive,
+    /* watch(() => props.product.stock, (stock) => {//Vue espera una propiedad reactiva no una referencia como este caso, por eso como primer parametro pasamos una function anonima que nos devuelva la propiedad que queremos observar en el objeto reactive,
       if (stock <= 1) {
         productState.price_color = 'rgb(188, 30, 67)'
       }
-    });
+    }); */
+
+    /* const price_color = computed(()=>{
+      if (props.product.stock <= 1) {
+        return 'rgb(188, 30, 67)'
+      }
+      return 'rgb(104,104,209)'
+    }) */
 
 
     return {
       ...toRefs(productState),
       applyDiscount,
-      sendToCart
-
+      sendToCart,
+      // price_color
     }
   }
 })
