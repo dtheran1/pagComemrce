@@ -36,7 +36,7 @@ app.component('product', {
           <p class="description__status" v-else-if="product.stock === 0">
             Producto Agotado! 😪
           </p>
-          <p class="description__price">
+          <p class="description__price" :style="{color: price_color}">
             $ {{ new Intl.NumberFormat('es-CO').format(product.price) }}
           </p>
           <p class="description__content"></p>
@@ -59,7 +59,7 @@ app.component('product', {
         return {
             activeImage: 0,
             discountCodes: ['PLATZI20', 'DANIELCODE'],
-
+            price_color: 'rgb(104, 104, 209)'
         }
     },
     methods: {
@@ -76,4 +76,11 @@ app.component('product', {
         this.$emit('sendtocart', this.product)
       }
     },
+    watch: {
+      'product.stock'(stock) {
+        if (stock <= 1) {
+          this.price_color = 'rgb(188, 30, 67)'
+        }
+      }
+    }
 })

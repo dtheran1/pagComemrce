@@ -31,10 +31,16 @@
               product.quantity }})
             </span>
           </div>
+          <p>Total: $ {{new Intl.NumberFormat('es-CO').format(total)}}</p>
         </div>
       </header>
       <main>
-        <product v-for="product in products" :key="product.name" :product="product" @sendtocart="addToCart($event)"></product>
+        <product
+          v-for="product in products"
+          :key="product.name"
+          :product="product"
+          @sendtocart="addToCart($event)"
+        ></product>
       </main>
     </div>
     <script src="https://unpkg.com/vue@next"></script>
@@ -125,21 +131,35 @@
             ],
             cartOpen: false,
             cart: [],
+            total: 0,
           };
         },
         methods: {
           addToCart(product) {
             const prodIndex = this.cart.findIndex(
-                (prod) => prod.name === product.name
+              (prod) => prod.name === product.name
             );
             if (prodIndex >= 0) {
-                this.cart[prodIndex].quantity += 1;
+              this.cart[prodIndex].quantity += 1;
             } else {
-                this.cart.push(product);
+              this.cart.push(product);
             }
             product.stock -= 1;
+          },
         },
-        }
+        watch: {
+          cart: {
+            handler(cart) {
+              this.total = cart.reduce((prev, curr) => {
+                const prevPrice = prev.price || prev;
+                const prevQuantity = prev.quantity || 1;
+
+                return prevPrice * prevQuantity + curr.price * curr.quantity;
+              }, 0);
+            },
+            deep: true,
+          },
+        },
       });
     </script>
     <script src="./Badge.js"></script>
