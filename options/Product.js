@@ -54,34 +54,9 @@ app.component('product', {
           </button>
         </section>
     `,
+    props:['product'],
     data() {
         return {
-            product: {
-                name: 'Camara',
-                price: 450_000,
-                stock: 5,
-                content: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt
-                        atque dolorum corporis, reiciendis eaque temporibus quod magnam amet
-                        ea natus delectus? Aut placeat ipsam minus labore voluptas. Porro,
-                        vel aliquid!`,
-                images: [
-                    {
-                        image:
-                            'https://static.platzi.com/media/tmp/class-files/github/platzi-vuejs/platzi-vuejs-vuejs-02-2/options/images/camara.jpg',
-                        thumbnail:
-                            'https://static.platzi.com/media/tmp/class-files/github/platzi-vuejs/platzi-vuejs-vuejs-02-2/options/images/camara-thumb.jpg',
-                    },
-                    {
-                        image:
-                            'https://static.platzi.com/media/tmp/class-files/github/platzi-vuejs/platzi-vuejs-vuejs-02-2/options/images/camara-2.jpg',
-                        thumbnail:
-                            'https://static.platzi.com/media/tmp/class-files/github/platzi-vuejs/platzi-vuejs-vuejs-02-2/options/images/camara-2-thumb.jpg',
-                    },
-                ],
-                new: false,
-                offer: true,
-                quantity: 1,
-            },
             activeImage: 0,
             discountCodes: ['PLATZI20', 'DANIELCODE'],
 
