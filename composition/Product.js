@@ -48,27 +48,21 @@ app.component('product', {
               @keyup.enter="applyDiscount($event)"
             />
           </div>
-          <button :disabled="product.stock === 0" @click="addToCart()">
+          <button :disabled="product.stock === 0" @click="sendToCart()">
             Agregar al carrito
           </button>
         </section>
     `,
   props: ['product'],
-  setup(props) {
+  emits: ['sendtocart'],
+  setup(props, { emit }) {
     const productState = reactive({
       activeImage: 0,
     });
-    const addToCart = () => {
-      const prodIndex = cartState.cart.findIndex(
-        (prod) => prod.name === props.product.name
-      );
-      if (prodIndex >= 0) {
-        cartState.cart[prodIndex].quantity += 1;
-      } else {
-        cartState.cart.push(props.product);
-      }
-      props.product.stock -= 1;
-    };
+
+    const sendToCart = () => {
+      emit('sendtocart', props.product)
+    }
 
     const discountCodes = ref(['PLATZI20', 'DANIELCODE']);
     function applyDiscount(event) {
@@ -82,8 +76,8 @@ app.component('product', {
     }
     return {
       ...toRefs(productState),
-      addToCart,
       applyDiscount,
+      sendToCart
 
     }
   }
