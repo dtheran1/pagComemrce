@@ -61,6 +61,8 @@
           <span class="badge new" v-if="product.new">Nuevo</span>
           <span class="badge offer" v-if="product.offer">Oferta</span>
           <p class="description__status"v-if="product.stock === 3">Quedan pocas unidades</p>
+          <p class="description__status"v-else-if="product.stock === 2">El producto esta por terminarse!</p>
+          <p class="description__status"v-else>Ultima unidad disponible </p>
           <p class="description__price">
             $ {{ new Intl.NumberFormat('es-CO').format(product.price) }}
           </p>
@@ -69,21 +71,20 @@
             <span>Codigo de Descuento:</span>
             <input type="text" placeholder="Ingresa tu codigo" />
           </div>
-          <button>Agregar al carrito</button>
+          <button :disabled="product.stock === 0">Agregar al carrito</button>
         </section>
       </main>
     </div>
     <script src="https://unpkg.com/vue@next"></script>
     <script>
       const { createApp } = Vue;
-
       const app = createApp({
         data() {
           return {
             product: {
               name: 'Camara',
               price: 450_000,
-              stock: 3,
+              stock: 0,
               content: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt
                         atque dolorum corporis, reiciendis eaque temporibus quod magnam amet
                         ea natus delectus? Aut placeat ipsam minus labore voluptas. Porro,
