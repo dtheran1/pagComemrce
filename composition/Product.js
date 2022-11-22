@@ -1,5 +1,5 @@
 app.component('product', {
-    template: /* vue-html */ `
+  template: /* vue-html */ `
         <section class="product">
           <div class="product__thumbnails">
             <div
@@ -20,8 +20,7 @@ app.component('product', {
             {{ product.name.toUpperCase() }} {{ product.stock === 0 ? '🤔' :
             '😎' }}
           </h4>
-          <span class="badge new" v-if="product.new">Nuevo</span>
-          <span class="badge offer" v-if="product.offer">Oferta</span>
+          <bagde :product="product"></bagde>
           <p class="description__status" v-if="product.stock > 3">
             Quedan {{ product.stock }} unidades disponibles! 🔥
           </p>
@@ -54,38 +53,38 @@ app.component('product', {
           </button>
         </section>
     `,
-    props:['product'],
-    setup(props) {
-        const productState = reactive({
-            activeImage: 0,
-        });
-        const addToCart = () => {
-            const prodIndex = cartState.cart.findIndex(
-                (prod) => prod.name === props.product.name
-            );
-            if (prodIndex >= 0) {
-                cartState.cart[prodIndex].quantity += 1;
-            } else {
-                cartState.cart.push(props.product);
-            }
-            props.product.stock -= 1;
-        };
+  props: ['product'],
+  setup(props) {
+    const productState = reactive({
+      activeImage: 0,
+    });
+    const addToCart = () => {
+      const prodIndex = cartState.cart.findIndex(
+        (prod) => prod.name === props.product.name
+      );
+      if (prodIndex >= 0) {
+        cartState.cart[prodIndex].quantity += 1;
+      } else {
+        cartState.cart.push(props.product);
+      }
+      props.product.stock -= 1;
+    };
 
-        const discountCodes = ref(['PLATZI20', 'DANIELCODE']);
-        function applyDiscount(event) {
-            const discountCodeIndex = discountCodes.value.indexOf(
-                event.target.value
-            );
-            if (discountCodeIndex >= 0) {
-                props.product.price *= 50 / 100;
-                discountCodes.value.splice(discountCodeIndex, 1);
-            }
-        }
-        return{
-            ...toRefs(productState),
-            addToCart,
-            applyDiscount,
-
-        }
+    const discountCodes = ref(['PLATZI20', 'DANIELCODE']);
+    function applyDiscount(event) {
+      const discountCodeIndex = discountCodes.value.indexOf(
+        event.target.value
+      );
+      if (discountCodeIndex >= 0) {
+        props.product.price *= 50 / 100;
+        discountCodes.value.splice(discountCodeIndex, 1);
+      }
     }
+    return {
+      ...toRefs(productState),
+      addToCart,
+      applyDiscount,
+
+    }
+  }
 })
