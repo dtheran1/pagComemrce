@@ -36,7 +36,7 @@ app.component('product', {
           <p class="description__status" v-else-if="product.stock === 0">
             Producto Agotado! 😪
           </p>
-          <p class="description__price">
+          <p class="description__price" :style="{color: price_color}" >
             $ {{ new Intl.NumberFormat('es-CO').format(product.price) }}
           </p>
           <p class="description__content"></p>
@@ -58,6 +58,7 @@ app.component('product', {
   setup(props, { emit }) {
     const productState = reactive({
       activeImage: 0,
+      price_color: 'rgb(104,104,209)'
     });
 
     const sendToCart = () => {
@@ -74,6 +75,14 @@ app.component('product', {
         discountCodes.value.splice(discountCodeIndex, 1);
       }
     }
+
+    watch(() => props.product.stock, (stock) => {//Vue espera una propiedad reactiva no una referencia como este caso, por eso como primer parametro pasamos una function anonima que nos devuelva la propiedad que queremos observar en el objeto reactive,
+      if (stock <= 1) {
+        productState.price_color = 'rgb(188, 30, 67)'
+      }
+    });
+
+
     return {
       ...toRefs(productState),
       applyDiscount,

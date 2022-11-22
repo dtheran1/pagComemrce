@@ -31,6 +31,7 @@
               ({{product.quantity}})
             </span>
           </div>
+          <p>Total: $ {{new Intl.NumberFormat('es-CO').format(total)}}</p>
         </div>
       </header>
       <main>
@@ -44,7 +45,7 @@
     </div>
     <script src="https://unpkg.com/vue@next"></script>
     <script>
-      const { createApp, ref, reactive, toRefs } = Vue;
+      const { createApp, ref, reactive, toRefs, watch } = Vue;
       const app = createApp({
         setup() {
           const products = ref([
@@ -130,6 +131,7 @@
           const cartState = reactive({
             cartOpen: false,
             cart: [],
+            total: 0,
           });
 
           const addToCart = (product) => {
@@ -143,10 +145,25 @@
             }
             product.stock -= 1;
           };
+
+          watch(
+            cartState.cart,
+            () => {
+              cartState.total = cartState.cart.reduce((prev, curr) => {
+                const prevPrice = prev.price || prev;
+                const prevQuantity = prev.quantity || 1;
+
+                return prevPrice * prevQuantity + curr.price * curr.quantity;
+              }, 0);
+            },
+            // { Para tener en cuenta, aqui no usamos un deep para decirle a vue que este observando de manera profunda alguna propiedad, esto se debe a que el cartState.cart es un array y esto se convierte en un proxy para vue, estara observandolo constantemente
+            //   deeo: true,
+            // }
+          );
           return {
             ...toRefs(cartState),
             products,
-            addToCart
+            addToCart,
           };
         },
       });
