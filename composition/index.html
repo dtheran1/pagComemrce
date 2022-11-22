@@ -11,7 +11,7 @@
     <div id="app">
       <header>
         <h3>PlatziCommerce</h3>
-        <button class="cart" @click="cartOpen = !cartOpen">Carro (0)</button>
+        <button class="cart" @click="cartOpen = !cartOpen">Carro ({{ cart.length }})</button>
         <div class="cart-content" v-if="cartOpen">
           <div
             class="cart-content__product"
@@ -25,7 +25,7 @@
             />
             <span
               >{{ product.name }} - $ {{ new
-              Intl.NumberFormat('es-CO').format(product.price) }}</span
+              Intl.NumberFormat('es-CO').format(product.price) }} ({{product.quantity}}) </span
             >
           </div>
         </div>
@@ -77,10 +77,10 @@
             <input
               type="text"
               placeholder="Ingresa tu codigo"
-              @keyup.enter="product.price *= 50 / 100"
+              @keyup.enter="applyDiscount($event)"
             />
           </div>
-          <button :disabled="product.stock === 0" @click="product.stock -= 1">
+          <button :disabled="product.stock === 0" @click="addToCart">
             Agregar al carrito
           </button>
         </section>
@@ -115,16 +115,45 @@
             ],
             new: false,
             offer: true,
+            quantity: 1
           });
 
           const activeImage = ref(0);
           const cartOpen = ref(false);
           const cart = ref([]);
+
+          const addToCart = () => {
+            const prodIndex = cart.value.findIndex(
+              (prod) => prod.name === product.value.name
+            );
+            if (prodIndex >= 0) {
+              cart.value[
+                
+              ].quantity += 1;
+            } else {
+              cart.value.push(product.value);
+            }
+            product.value.stock -= 1;
+          }
+
+          const discountCodes = ref(['PLATZI20', 'DANIELCODE']);
+          function applyDiscount(event) {
+            const discountCodeIndex = discountCodes.value.indexOf(
+              event.target.value
+            );
+            if (discountCodeIndex >= 0) {
+              product.value.price *= 50 / 100;
+              discountCodes.value.splice(discountCodeIndex, 1);
+            }
+          }
+
           return {
             product,
             activeImage,
             cart,
             cartOpen,
+            applyDiscount,
+            addToCart
           };
         },
       });
